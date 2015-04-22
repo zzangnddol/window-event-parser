@@ -17,9 +17,6 @@ public class Node0x01 extends Node {
     public String getXml() {
         Node string = this.chunk.getString(this.pointer);
         String xml = "\n<";
-        if (string.getXml().equals("Error")) {
-            System.out.println(string.getXml());
-        }
         xml += string.getXml();
 
         String tmp = super.getXml();

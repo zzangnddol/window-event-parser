@@ -1,5 +1,11 @@
 package zzangnddol.parser.evtx;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+import javax.xml.bind.DatatypeConverter;
+
 public class EvtxUtil {
     private static final String GUID_FORMAT = "{%8s-%4s-%4s-%4s-%12s}";
     private static final int[] splitLength = {4, 2, 2, 2, 6};
@@ -21,5 +27,12 @@ public class EvtxUtil {
             tmp[i] = new StringBuilder(tmp[i]).reverse().toString();
         }
         return String.format(GUID_FORMAT, tmp);
+    }
+
+    public static String toGMTTimeString(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return DatatypeConverter.printDateTime(c);
     }
 }
