@@ -14,6 +14,10 @@ public class Evt {
 
     public Evt(String fileName) throws IOException {
         this.fileName = fileName;
+        init();
+    }
+
+    private void init() throws IOException {
         this.file = new RandomAccessFile(this.fileName, "r");
         readHeader();
     }
@@ -50,5 +54,9 @@ public class Evt {
         } else {
             return null;
         }
+    }
+
+    public Header getHeader() {
+        return header;
     }
 }
