@@ -50,72 +50,36 @@ public class Cursor {
         return length;
     }
 
-    public void setLength(long length) {
-        this.length = length;
-    }
-
     public long getSignautre1() {
         return signature1;
-    }
-
-    public void setSignautre1(long signautre1) {
-        this.signature1 = signautre1;
     }
 
     public long getSignature2() {
         return signature2;
     }
 
-    public void setSignature2(long signature2) {
-        this.signature2 = signature2;
-    }
-
     public long getStartOffset() {
         return startOffset;
-    }
-
-    public void setStartOffset(long startOffset) {
-        this.startOffset = startOffset;
     }
 
     public long getNextOffset() {
         return nextOffset;
     }
 
-    public void setNextOffset(long nextOffset) {
-        this.nextOffset = nextOffset;
-    }
-
     public long getCurrentRecordNumber() {
         return currentRecordNumber;
-    }
-
-    public void setCurrentRecordNumber(long currentRecordNumber) {
-        this.currentRecordNumber = currentRecordNumber;
     }
 
     public long getOldestRecordNumber() {
         return oldestRecordNumber;
     }
 
-    public void setOldestRecordNumber(long oldestRecordNumber) {
-        this.oldestRecordNumber = oldestRecordNumber;
-    }
-
     public long getSignature3() {
         return signature3;
     }
 
-    public void setSignature3(long signature3) {
-        this.signature3 = signature3;
-    }
-
     public long getSignature4() {
         return signature4;
-    }
-
-    public void setSignature4(long signature4) {
-        this.signature4 = signature4;
     }
 
 }

@@ -6,6 +6,8 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import zzangnddol.parser.util.ParseUtil;
+
 public class Evt {
     private static final String LFLE_MAGIC = "LfLe";
 
@@ -24,7 +26,18 @@ public class Evt {
 
     private void init(File file) throws IOException {
         this.file = new RandomAccessFile(file, "r");
-        readHeader();
+        LengthAndMagic lam = readLengthAndMagic(0);
+        if (lam.length == 48 && lam.magic.equals(LFLE_MAGIC)) {
+            readHeader();
+        }
+    }
+
+    private LengthAndMagic readLengthAndMagic(long position) throws IOException {
+        file.seek(position);
+        byte[] bytes = new byte[8];
+        file.read(bytes);
+        file.seek(position);
+        return new LengthAndMagic(bytes);
     }
 
     private void readHeader() throws IOException {
@@ -40,19 +53,14 @@ public class Evt {
         long position = 0;
         if (currentRecorder == null) {
             // first record
-            position = 48;
+            position = header == null ? 0 : 48;
         } else {
             position = currentRecorder.nextRecordOffset();
         }
-        file.seek(position);
-        byte[] bytes = new byte[8];
-        file.read(bytes);
-        ByteBuffer buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
-        int recordLength = buffer.getInt();
-        String magic = new String(bytes, 4, 4);
-        if (magic.equals(LFLE_MAGIC)) {
+        LengthAndMagic lam = readLengthAndMagic(position);
+        if (lam.magic.equals(LFLE_MAGIC)) {
             file.seek(position);
-            byte[] recordBytes = new byte[recordLength];
+            byte[] recordBytes = new byte[lam.length];
             file.read(recordBytes);
             currentRecorder = new Record(position, recordBytes);
             return currentRecorder;
@@ -70,4 +78,14 @@ public class Evt {
         return header;
     }
 
+    private class LengthAndMagic {
+        int length;
+        String magic;
+
+        LengthAndMagic(byte[] bytes) {
+            ByteBuffer buffer = ParseUtil.asByteBuffer(bytes, ByteOrder.LITTLE_ENDIAN);
+            length = buffer.getInt();
+            magic = new String(bytes, 4, 4);
+        }
+    }
 }

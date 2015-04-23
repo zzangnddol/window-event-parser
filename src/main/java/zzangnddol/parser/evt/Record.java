@@ -8,6 +8,7 @@ import java.nio.charset.CharsetDecoder;
 import java.util.Date;
 
 import zzangnddol.parser.evtx.EvtxUtil;
+import zzangnddol.parser.util.ParseUtil;
 
 public class Record {
     private long offset;
@@ -46,8 +47,9 @@ public class Record {
     public Record(long offset, byte[] bytes) {
         this.offset = offset;
         this.bytes = bytes;
-        ByteBuffer buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer buffer = ParseUtil.asByteBuffer(bytes, ByteOrder.LITTLE_ENDIAN);
         length = buffer.getInt();
+        // magic
         byte[] b = new byte[4];
         buffer.get(b);
         signature = new String(b);
@@ -172,127 +174,64 @@ public class Record {
         return length;
     }
 
-    public void setLength(long length) {
-        this.length = length;
-    }
-
     public String getSignature() {
         return signature;
-    }
-
-    public void setSignature(String signature) {
-        this.signature = signature;
     }
 
     public long getRecordNumber() {
         return recordNumber;
     }
 
-    public void setRecordNumber(long recordNumber) {
-        this.recordNumber = recordNumber;
-    }
-
     public Date getTimeGenerated() {
         return timeGenerated;
-    }
-
-    public void setTimeGenerated(Date timeGenerated) {
-        this.timeGenerated = timeGenerated;
     }
 
     public Date getTimeWritten() {
         return timeWritten;
     }
 
-    public void setTimeWritten(Date timeWritten) {
-        this.timeWritten = timeWritten;
-    }
-
     public int getEventId() {
         return eventId;
-    }
-
-    public void setEventId(int eventId) {
-        this.eventId = eventId;
     }
 
     public int getEventType() {
         return eventType;
     }
 
-    public void setEventType(int eventType) {
-        this.eventType = eventType;
-    }
-
     public int getNumStrings() {
         return numStrings;
-    }
-
-    public void setNumStrings(int numStrings) {
-        this.numStrings = numStrings;
     }
 
     public int getEventCategory() {
         return eventCategory;
     }
 
-    public void setEventCategory(int eventCategory) {
-        this.eventCategory = eventCategory;
-    }
-
     public int getReservedFlags() {
         return reservedFlags;
-    }
-
-    public void setReservedFlags(int reservedFlags) {
-        this.reservedFlags = reservedFlags;
     }
 
     public long getClosingRecordNumber() {
         return closingRecordNumber;
     }
 
-    public void setClosingRecordNumber(long closingRecordNumber) {
-        this.closingRecordNumber = closingRecordNumber;
-    }
-
     public long getStringsOffset() {
         return stringsOffset;
-    }
-
-    public void setStringsOffset(long stringsOffset) {
-        this.stringsOffset = stringsOffset;
     }
 
     public long getUserSidLength() {
         return userSidLength;
     }
 
-    public void setUserSidLength(long userSidLength) {
-        this.userSidLength = userSidLength;
-    }
-
     public long getUserSidOffset() {
         return userSidOffset;
-    }
-
-    public void setUserSidOffset(long userSidOffset) {
-        this.userSidOffset = userSidOffset;
     }
 
     public long getDataLength() {
         return dataLength;
     }
 
-    public void setDataLength(long dataLength) {
-        this.dataLength = dataLength;
-    }
-
     public long getDataOffset() {
         return dataOffset;
     }
 
-    public void setDataOffset(long dataOffset) {
-        this.dataOffset = dataOffset;
-    }
 }
