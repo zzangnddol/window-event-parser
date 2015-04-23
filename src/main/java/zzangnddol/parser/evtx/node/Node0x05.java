@@ -10,6 +10,7 @@ public class Node0x05 extends Node {
         super(chunk, parent, start, length);
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void parseSelf() {
         byte[] data = chunk.getData(start, 2);

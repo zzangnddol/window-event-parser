@@ -9,6 +9,7 @@ public class Node0x0e extends Node {
         super(chunk, parent, start, length);
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void parseSelf() {
         ByteBuffer data = chunk.getByteBuffer(start, 4);

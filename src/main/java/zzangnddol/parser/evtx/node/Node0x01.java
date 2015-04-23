@@ -34,6 +34,7 @@ public class Node0x01 extends Node {
         return xml;
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void parseSelf() {
         ByteBuffer buffer = chunk.getByteBuffer(start, 11);

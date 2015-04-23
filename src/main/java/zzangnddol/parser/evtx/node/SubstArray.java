@@ -20,6 +20,7 @@ public class SubstArray extends Node {
         super(chunk, parent, start, length);
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void parseSelf() {
         int dataPos = start;
@@ -41,6 +42,7 @@ public class SubstArray extends Node {
         tagLength = dataPos - this.start;
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void parseDown() {
         int dataPos = start + tagLength;

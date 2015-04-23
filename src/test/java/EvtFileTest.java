@@ -7,6 +7,7 @@ import java.nio.ByteOrder;
 import zzangnddol.parser.evt.Record;
 
 public class EvtFileTest {
+    @SuppressWarnings({ "unused", "resource" })
     public static void main(String[] args) throws Exception {
         File f = new File("target/test-classes/eventfile/SecEvent.Evt");
         int i = 0;
@@ -33,6 +34,7 @@ public class EvtFileTest {
         }
     }
 
+    @SuppressWarnings("unused")
     private static boolean isCursorMagic(byte[] bytes) {
         //        System.out.println(HexDump.toHexString(bytes));
         for (int i = 0; i < 4; i++) {
@@ -44,12 +46,14 @@ public class EvtFileTest {
         return true;
     }
 
+    @SuppressWarnings("unused")
     private static long readInt(RandomAccessFile file) throws IOException {
         byte[] tmp = new byte[4];
         file.read(tmp);
         return ByteBuffer.wrap(tmp).order(ByteOrder.LITTLE_ENDIAN).getInt();
     }
 
+    @SuppressWarnings("unused")
     private static String readMagic(RandomAccessFile file) throws IOException {
         byte[] tmp = new byte[4];
         file.read(tmp);

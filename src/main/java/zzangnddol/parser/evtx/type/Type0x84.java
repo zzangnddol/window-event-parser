@@ -10,7 +10,7 @@ public class Type0x84 extends VariantType {
 
     @Override
     public void parseSelf() {
-        start = this.start;
+        int start = this.start;
         byte[] data = null;
         if (context == 1) {
             data = chunk.getData(start, length);

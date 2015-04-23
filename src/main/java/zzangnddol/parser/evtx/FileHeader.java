@@ -15,6 +15,7 @@ public class FileHeader {
     private short majorVersion;
     private short headerChunkSize;
     private short chunkCount;
+    @SuppressWarnings("unused")
     private byte[] unused1;
     private int flags;
     private int checksum;
