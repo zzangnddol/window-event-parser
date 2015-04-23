@@ -44,7 +44,6 @@ public class Evt {
         } else {
             position = currentRecorder.nextRecordOffset();
         }
-        System.out.println("before nextRecord: " + currentRecorder);
         file.seek(position);
         byte[] bytes = new byte[8];
         file.read(bytes);
