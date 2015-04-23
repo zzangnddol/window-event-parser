@@ -1,24 +1,29 @@
 package zzangnddol.parser.evt;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class Evt {
-    private String fileName;
+    private static final String LFLE_MAGIC = "LfLe";
+
     private RandomAccessFile file;
     private Header header;
 
     private Record currentRecorder;
 
     public Evt(String fileName) throws IOException {
-        this.fileName = fileName;
-        init();
+        this(new File(fileName));
     }
 
-    private void init() throws IOException {
-        this.file = new RandomAccessFile(this.fileName, "r");
+    public Evt(File file) throws IOException {
+        init(file);
+    }
+
+    private void init(File file) throws IOException {
+        this.file = new RandomAccessFile(file, "r");
         readHeader();
     }
 
@@ -39,13 +44,14 @@ public class Evt {
         } else {
             position = currentRecorder.nextRecordOffset();
         }
+        System.out.println("before nextRecord: " + currentRecorder);
         file.seek(position);
         byte[] bytes = new byte[8];
         file.read(bytes);
         ByteBuffer buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
         int recordLength = buffer.getInt();
         String magic = new String(bytes, 4, 4);
-        if (magic.equals("LfLe")) {
+        if (magic.equals(LFLE_MAGIC)) {
             file.seek(position);
             byte[] recordBytes = new byte[recordLength];
             file.read(recordBytes);
@@ -56,7 +62,13 @@ public class Evt {
         }
     }
 
+    public Record gotoLastRecord() throws IOException {
+        while(nextRecord() != null);
+        return currentRecorder;
+    }
+
     public Header getHeader() {
         return header;
     }
+
 }

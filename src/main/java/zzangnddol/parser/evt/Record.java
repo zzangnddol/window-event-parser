@@ -32,6 +32,7 @@ public class Record {
     // 해당 레코드의 전체 byte
     private byte[] bytes;
 
+    @SuppressWarnings("unused")
     private String sid = "";
     private String source = "";
     private String strings = "";
@@ -143,6 +144,7 @@ public class Record {
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append("======== RECORD ========\n");
+        buffer.append("offset   : ").append(String.format("0x%08x(%d)", offset, offset)).append("\n");
         buffer.append("length   : ").append(String.format("0x%08x(%d)", length, length)).append("\n");
         buffer.append("signature: ").append(signature).append("\n");
         buffer.append("rec no   : ").append(String.format("0x%08x(%d)", recordNumber, recordNumber)).append("\n");
