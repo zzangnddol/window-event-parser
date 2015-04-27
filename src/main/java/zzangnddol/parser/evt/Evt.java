@@ -87,7 +87,7 @@ public class Evt {
                 position += lam.length;
             }
             lam = readLengthAndMagic(beforePosition);
-            currentRecorder = new Record(position, readRecordBytes(beforePosition, lam.length));
+            currentRecorder = new Record(beforePosition, readRecordBytes(beforePosition, lam.length));
             return currentRecorder;
         } finally {
             logger.debug("Window EVT gotoLastRecord elapsed time: {} ms", System.currentTimeMillis() - current);
