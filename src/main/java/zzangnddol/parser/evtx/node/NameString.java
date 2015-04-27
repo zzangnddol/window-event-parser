@@ -13,6 +13,7 @@ public class NameString extends Node {
         super(chunk, parent, start, length);
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void parseSelf() {
         ByteBuffer buffer = chunk.getByteBuffer(start, 8);

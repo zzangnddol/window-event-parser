@@ -26,7 +26,7 @@ public class EvtxUtil {
         for (int i = 0; i < 3; i++) {
             tmp[i] = new StringBuilder(tmp[i]).reverse().toString();
         }
-        return String.format(GUID_FORMAT, tmp);
+        return String.format(GUID_FORMAT, (Object[])tmp);
     }
 
     public static String toGMTTimeString(Date date) {

@@ -7,6 +7,7 @@ public class Node0x04 extends Node {
         super(chunk, parent, start, length);
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void parseSelf() {
         byte opcode = chunk.getData(start, 1)[0];

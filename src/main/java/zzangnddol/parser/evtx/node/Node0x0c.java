@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import zzangnddol.parser.evtx.Chunk;
 
 public class Node0x0c extends Node {
+    @SuppressWarnings("unused")
     private int templateId;
     private int pointer;
 
@@ -18,6 +19,7 @@ public class Node0x0c extends Node {
         return template.getXml();
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void parseSelf() {
         ByteBuffer data = chunk.getByteBuffer(start, 10);

@@ -15,10 +15,12 @@ import zzangnddol.parser.evtx.xml.Event;
 
 public class Chunk {
     private static final int CHUNK_SIZE = 0x10000;      // 65536
+    @SuppressWarnings("unused")
     private static final int CHUNK_HEADER_SIZE = 0x200; // 512
 
     private RandomAccessFile file;
     private long chunkNumber;
+    @SuppressWarnings("unused")
     private long offset;
     private byte[] data = new byte[CHUNK_SIZE]; // 전체 데이터를 담고 있다.
 
@@ -28,7 +30,9 @@ public class Chunk {
     private long numFirstFile;
     private long numLastFile;
     private int ofsNextRec;
+    @SuppressWarnings("unused")
     private int crc32Data;
+    @SuppressWarnings("unused")
     private int crc32Header;
 
     private int tagState;

@@ -10,6 +10,7 @@ public class Type0x92 extends VariantType {
         super(type, chunk, start, length, context);
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void parseSelf() {
         ByteBuffer buffer = chunk.getByteBuffer(start, length);

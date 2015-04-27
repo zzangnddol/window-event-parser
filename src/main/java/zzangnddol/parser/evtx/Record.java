@@ -23,13 +23,17 @@ public class Record {
     private Chunk chunk;
     private int start;
 
+    @SuppressWarnings("unused")
     private int magic;
     private int length;
+    @SuppressWarnings("unused")
     private long recordId;
+    @SuppressWarnings("unused")
     private Date timeCreated;
 
     private Root root;
 
+    @SuppressWarnings("unused")
     private BlockingQueue<Node> children = new LinkedBlockingDeque<Node>();
 
     public Record(Chunk chunk, int start) {
@@ -140,7 +144,6 @@ public class Record {
         //        }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
@@ -152,10 +155,12 @@ public class Record {
         return buffer.toString();
     }
 
+    @SuppressWarnings("unused")
     private String hex(byte b) {
         return HexDump.toHexString(b);
     }
 
+    @SuppressWarnings("unused")
     private String hex(int i) {
         return HexDump.toHexString(i);
     }

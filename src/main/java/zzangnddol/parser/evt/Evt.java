@@ -6,7 +6,14 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import zzangnddol.parser.util.ParseUtil;
+
 public class Evt {
+    private Logger logger = LoggerFactory.getLogger(Evt.class);
+
     private static final String LFLE_MAGIC = "LfLe";
 
     private RandomAccessFile file;
@@ -24,7 +31,18 @@ public class Evt {
 
     private void init(File file) throws IOException {
         this.file = new RandomAccessFile(file, "r");
-        readHeader();
+        LengthAndMagic lam = readLengthAndMagic(0);
+        if (lam.length == 48 && lam.magic.equals(LFLE_MAGIC)) {
+            readHeader();
+        }
+    }
+
+    private LengthAndMagic readLengthAndMagic(long position) throws IOException {
+        file.seek(position);
+        byte[] bytes = new byte[8];
+        file.read(bytes);
+        file.seek(position);
+        return new LengthAndMagic(bytes);
     }
 
     private void readHeader() throws IOException {
@@ -40,19 +58,14 @@ public class Evt {
         long position = 0;
         if (currentRecorder == null) {
             // first record
-            position = 48;
+            position = header == null ? 0 : 48;
         } else {
             position = currentRecorder.nextRecordOffset();
         }
-        file.seek(position);
-        byte[] bytes = new byte[8];
-        file.read(bytes);
-        ByteBuffer buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
-        int recordLength = buffer.getInt();
-        String magic = new String(bytes, 4, 4);
-        if (magic.equals(LFLE_MAGIC)) {
+        LengthAndMagic lam = readLengthAndMagic(position);
+        if (lam.magic.equals(LFLE_MAGIC)) {
             file.seek(position);
-            byte[] recordBytes = new byte[recordLength];
+            byte[] recordBytes = new byte[lam.length];
             file.read(recordBytes);
             currentRecorder = new Record(position, recordBytes);
             return currentRecorder;
@@ -62,12 +75,53 @@ public class Evt {
     }
 
     public Record gotoLastRecord() throws IOException {
-        while(nextRecord() != null);
-        return currentRecorder;
+        long current = System.currentTimeMillis();
+        try {
+            LengthAndMagic lam = null;
+            long position = 0;
+            long beforePosition = 0;
+            while(true) {
+                lam = readLengthAndMagic(position);
+                if (!lam.magic.equals(LFLE_MAGIC)) break;
+                beforePosition = position;
+                position += lam.length;
+            }
+            lam = readLengthAndMagic(beforePosition);
+            currentRecorder = new Record(position, readRecordBytes(beforePosition, lam.length));
+            return currentRecorder;
+        } finally {
+            logger.debug("Window EVT gotoLastRecord elapsed time: {} ms", System.currentTimeMillis() - current);
+        }
+    }
+
+    private byte[] readRecordBytes(long position, int length) throws IOException {
+        byte[] bytes = new byte[length];
+        file.seek(position);
+        file.read(bytes);
+        return bytes;
     }
 
     public Header getHeader() {
         return header;
     }
 
+    private class LengthAndMagic {
+        int length;
+        String magic;
+
+        LengthAndMagic(byte[] bytes) {
+            ByteBuffer buffer = ParseUtil.asByteBuffer(bytes, ByteOrder.LITTLE_ENDIAN);
+            length = buffer.getInt();
+            magic = new String(bytes, 4, 4);
+        }
+
+        @Override
+        public String toString() {
+            return "Length: " + length + ", Magic: " + magic;
+        }
+    }
+
+    public Record getCurrentRecorder() {
+        return currentRecorder;
+    }
 }
