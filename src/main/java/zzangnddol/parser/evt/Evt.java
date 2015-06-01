@@ -16,7 +16,8 @@ public class Evt {
 
     private static final String LFLE_MAGIC = "LfLe";
 
-    private RandomAccessFile file;
+    private File file;
+    private RandomAccessFile randomAccessFile;
     private Header header;
 
     private Record currentRecorder;
@@ -26,11 +27,12 @@ public class Evt {
     }
 
     public Evt(File file) throws IOException {
+        this.file = file;
         init(file);
     }
 
     private void init(File file) throws IOException {
-        this.file = new RandomAccessFile(file, "r");
+        this.randomAccessFile = new RandomAccessFile(file, "r");
         LengthAndMagic lam = readLengthAndMagic(0);
         if (lam.length == 48 && lam.magic.equals(LFLE_MAGIC)) {
             readHeader();
@@ -38,20 +40,20 @@ public class Evt {
     }
 
     private LengthAndMagic readLengthAndMagic(long position) throws IOException {
-        file.seek(position);
+        randomAccessFile.seek(position);
         byte[] bytes = new byte[8];
-        file.read(bytes);
-        file.seek(position);
+        randomAccessFile.read(bytes);
+        randomAccessFile.seek(position);
         return new LengthAndMagic(bytes);
     }
 
     private void readHeader() throws IOException {
-        long current = file.getFilePointer();
-        file.seek(0);
+        long current = randomAccessFile.getFilePointer();
+        randomAccessFile.seek(0);
         byte[] bytes = new byte[48];
-        file.read(bytes);
+        randomAccessFile.read(bytes);
         this.header = new Header(bytes);
-        file.seek(current);
+        randomAccessFile.seek(current);
     }
 
     public Record nextRecord() throws IOException {
@@ -64,9 +66,9 @@ public class Evt {
         }
         LengthAndMagic lam = readLengthAndMagic(position);
         if (lam.magic.equals(LFLE_MAGIC)) {
-            file.seek(position);
+            randomAccessFile.seek(position);
             byte[] recordBytes = new byte[lam.length];
-            file.read(recordBytes);
+            randomAccessFile.read(recordBytes);
             currentRecorder = new Record(position, recordBytes);
             return currentRecorder;
         } else {
@@ -76,10 +78,10 @@ public class Evt {
 
     public Record gotoLastRecord() throws IOException {
         long current = System.currentTimeMillis();
+        long beforePosition = 0;
+        LengthAndMagic lam = null;
         try {
-            LengthAndMagic lam = null;
             long position = 0;
-            long beforePosition = 0;
             while(true) {
                 lam = readLengthAndMagic(position);
                 if (!lam.magic.equals(LFLE_MAGIC)) break;
@@ -89,6 +91,10 @@ public class Evt {
             lam = readLengthAndMagic(beforePosition);
             currentRecorder = new Record(beforePosition, readRecordBytes(beforePosition, lam.length));
             return currentRecorder;
+        } catch(OutOfMemoryError e) {
+            logger.warn("OutOfMemoryError occured: {}, position: {}, lam: {}", file.getAbsolutePath(), beforePosition, lam);
+            logger.warn(e.getMessage(), e);
+            throw e;
         } finally {
             logger.debug("Window EVT gotoLastRecord elapsed time: {} ms", System.currentTimeMillis() - current);
         }
@@ -96,8 +102,8 @@ public class Evt {
 
     private byte[] readRecordBytes(long position, int length) throws IOException {
         byte[] bytes = new byte[length];
-        file.seek(position);
-        file.read(bytes);
+        randomAccessFile.seek(position);
+        randomAccessFile.read(bytes);
         return bytes;
     }
 
